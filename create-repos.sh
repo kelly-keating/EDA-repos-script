@@ -1,16 +1,14 @@
 #!/bin/sh
 # This is a comment!
 
-# Enter your username here if not stored locally (will then request password)
-# GITHUB_USER=$(git config user.name) || "kelly-keating"
-# GITHUB_PASSWORD=
 
+eda_org="https://github.com/dev-academy-challenges"
+
+# Enter current cohort
 cohort="kotare-2019"
 
 # Repos you want to clone (make sure you match the name on eda-challenges)
 repos=("enspiraled")
-
-eda_org="https://github.com/dev-academy-challenges"
 
 
 
@@ -102,4 +100,5 @@ function protect_master {
     ( curl --user $github_user:$github_password -X PUT --data "$permissions" https://api.github.com/repos/$cohort/$repo/branches/master/protection > /dev/null ) && ( echo "\nSuccessfully updated master permissions on $repo" )
 }
 
+# Make it happen :)
 clone_repos
