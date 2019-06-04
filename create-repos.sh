@@ -5,25 +5,24 @@
 # GITHUB_USER=$(git config user.name) || "kelly-keating"
 # GITHUB_PASSWORD=
 
-COHORT="kotare-2019"
+cohort="kotare-2019"
 
 # Repos you want to clone (make sure you match the name on eda-challenges)
-REPOS=("enspiraled")
+repos=("enspiraled")
 
-EDA_ORG="https://github.com/dev-academy-challenges"
-STUDENT_ORG="https://github.com/$COHORT"
+eda_org="https://github.com/dev-academy-challenges"
 
 
 
 function clone_repos {
 
     echo "Starting script\n"
-    read -p "Github username: " GITHUB_USER
-    read -sp "Github password: " GITHUB_PASSWORD
+    read -p "Github username: " github_user
+    read -sp "Github password: " github_password
     echo "Awesome sauce!\n\n"
 
 
-    for repo in "${REPOS[@]}"; do
+    for repo in "${repos[@]}"; do
         clone_repo
         make_new_repo 
         push_repo
@@ -38,10 +37,10 @@ function clone_repos {
 
 function clone_repo {
 
-    echo "Copying repo $repo - $EDA_ORG/$repo.git\n"
+    echo "Copying repo $repo - $eda_org/$repo.git\n"
 
     # if remote exists, otherwise
-    ( git ls-remote $EDA_ORG/$repo.git -q ) && ( git clone $EDA_ORG/$repo.git ) || ("$repo  -  No such repo $EDA_ORG/$repo.git")
+    ( git ls-remote $eda_org/$repo.git -q ) && ( git clone $eda_org/$repo.git ) || ("$repo  -  No such repo $eda_org/$repo.git")
 }
 
 
@@ -55,7 +54,7 @@ function make_new_repo {
     new_repo_data='{"name":"'"$repo"'"}'
 
     # curl at github api
-    ( curl --user $GITHUB_USER:$GITHUB_PASSWORD -X POST --data "$new_repo_data" https://api.github.com/orgs/$COHORT/repos > /dev/null ) && ( echo "\nSuccessfully created repo $repo" )
+    ( curl --user $github_user:$github_password -X POST --data "$new_repo_data" https://api.github.com/orgs/$cohort/repos > /dev/null ) && ( echo "\nSuccessfully created repo $repo" )
 }
 
 
@@ -84,7 +83,7 @@ function push_branch {
     echo "\nCopying branch $branch"
 
     git checkout $branch
-    git push $STUDENT_ORG/$repo.git $branch
+    git push https://github.com/$cohort/$repo.git $branch
 }
 
 
@@ -100,7 +99,7 @@ function protect_master {
     # Parse it into json
     permissions=$(jq <<< $permission_settings)
 
-    ( curl --user $GITHUB_USER:$GITHUB_PASSWORD -X PUT --data "$permissions" https://api.github.com/repos/$COHORT/$repo/branches/master/protection > /dev/null ) && ( echo "\nSuccessfully updated master permissions on $repo" )
+    ( curl --user $github_user:$github_password -X PUT --data "$permissions" https://api.github.com/repos/$cohort/$repo/branches/master/protection > /dev/null ) && ( echo "\nSuccessfully updated master permissions on $repo" )
 }
 
 clone_repos
