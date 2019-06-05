@@ -1,16 +1,10 @@
 #!/bin/sh
-# This is a comment!
-
-
-
-eda_org="https://github.com/dev-academy-challenges"
 
 # Enter current cohort
 cohort="kotare-2019"
 
 # Repos you want to clone (make sure you match the name listed on eda-challenges)
 repos=("enspiraled" "heroku-checklist")
-
 
 
 function clone_repos {
@@ -34,6 +28,8 @@ function clone_repos {
 
 function clone_repo {
 
+    eda_org="https://github.com/dev-academy-challenges"
+
     echo "Copying repo $repo - $eda_org/$repo.git\n"
 
     # if remote exists, otherwise
@@ -46,7 +42,6 @@ function clone_repo {
     ) || (
         echo "No such repo $eda_org/$repo.git"
     )
-
 }
 
 
@@ -58,6 +53,8 @@ function make_new_repo {
 
     # TO ADD: "description": "This is your repository description",
     new_repo_data='{"name":"'"$repo"'"}'
+
+    # new_repo_data=$(jq <<< $new_repo_data)
 
     # curl at github api
     ( curl --user $github_user:$github_password -X POST --data "$new_repo_data" https://api.github.com/orgs/$cohort/repos > /dev/null ) && ( echo "\nSuccessfully created repo $repo" )
@@ -99,7 +96,7 @@ function protect_master {
 
     echo "\nUpdating master permissions\n"
 
-    # This is the branch permissions so that only admin can push to that branch
+    # This adds the branch restrictions so that only admin can push to that branch
     permission_settings='{"required_status_checks":null,"enforce_admins":null,"required_pull_request_reviews":null,"restrictions":{"users":[],"teams":[]}}'
 
     # Parse it into json
@@ -108,5 +105,4 @@ function protect_master {
     ( curl --user $github_user:$github_password -X PUT --data "$permissions" https://api.github.com/repos/$cohort/$repo/branches/master/protection > /dev/null ) && ( echo "\nSuccessfully updated master permissions on $repo\n" )
 }
 
-# Make it happen :)
 clone_repos
