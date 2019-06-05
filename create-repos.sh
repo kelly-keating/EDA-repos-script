@@ -2,13 +2,14 @@
 # This is a comment!
 
 
+
 eda_org="https://github.com/dev-academy-challenges"
 
 # Enter current cohort
 cohort="kotare-2019"
 
-# Repos you want to clone (make sure you match the name on eda-challenges)
-repos=("enspiraled")
+# Repos you want to clone (make sure you match the name listed on eda-challenges)
+repos=("enspiraled" "heroku-checklist")
 
 
 
@@ -22,12 +23,10 @@ function clone_repos {
 
     for repo in "${repos[@]}"; do
         clone_repo
-        make_new_repo 
-        push_repo
         protect_master
     done
 
-    echo "\nDone :)"
+    echo "Done :)"
 }
 
 
@@ -38,7 +37,16 @@ function clone_repo {
     echo "Copying repo $repo - $eda_org/$repo.git\n"
 
     # if remote exists, otherwise
-    ( git ls-remote $eda_org/$repo.git -q ) && ( git clone $eda_org/$repo.git ) || ("$repo  -  No such repo $eda_org/$repo.git")
+    ( 
+        git ls-remote $eda_org/$repo.git -q 
+    ) && ( 
+        git clone $eda_org/$repo.git 
+        make_new_repo 
+        push_repo
+    ) || (
+        echo "No such repo $eda_org/$repo.git"
+    )
+
 }
 
 
@@ -97,7 +105,7 @@ function protect_master {
     # Parse it into json
     permissions=$(jq <<< $permission_settings)
 
-    ( curl --user $github_user:$github_password -X PUT --data "$permissions" https://api.github.com/repos/$cohort/$repo/branches/master/protection > /dev/null ) && ( echo "\nSuccessfully updated master permissions on $repo" )
+    ( curl --user $github_user:$github_password -X PUT --data "$permissions" https://api.github.com/repos/$cohort/$repo/branches/master/protection > /dev/null ) && ( echo "\nSuccessfully updated master permissions on $repo\n" )
 }
 
 # Make it happen :)
