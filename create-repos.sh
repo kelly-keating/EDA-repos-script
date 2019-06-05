@@ -6,6 +6,8 @@ cohort="kotare-2019"
 # Repos you want to clone (make sure you match the name listed on eda-challenges)
 repos=("pupparazzi" "enspiraled")
 
+# TODO: take repos from args rather than array
+
 
 function clone_repos {
 
@@ -106,4 +108,4 @@ function protect_master {
     ( curl --user $github_user:$github_password -X PUT --data "$permissions" https://api.github.com/repos/$cohort/$repo/branches/master/protection > /dev/null ) && ( echo "\nUpdated master permissions on $repo\n" )
 }
 
-clone_repos
+clone_repos 
