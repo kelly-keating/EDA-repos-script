@@ -54,8 +54,6 @@ function make_new_repo {
     # TO ADD: "description": "This is your repository description",
     new_repo_data='{"name":"'"$repo"'"}'
 
-    # new_repo_data=$(jq <<< $new_repo_data)
-
     # curl at github api
     ( curl --user $github_user:$github_password -X POST --data "$new_repo_data" https://api.github.com/orgs/$cohort/repos > /dev/null ) && ( echo "\nSuccessfully created repo $repo" )
 }
