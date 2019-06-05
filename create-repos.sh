@@ -4,7 +4,7 @@
 cohort="kotare-2019"
 
 # Repos you want to clone (make sure you match the name listed on eda-challenges)
-repos=("enspiraled" "heroku-checklist")
+repos=("pupparazzi" "enspiraled")
 
 
 function clone_repos {
@@ -14,6 +14,7 @@ function clone_repos {
     read -sp "Github password: " github_password
     echo "Awesome sauce!\n\n"
 
+    # TODO: Check credentials
 
     for repo in "${repos[@]}"; do
         clone_repo
@@ -51,11 +52,12 @@ function make_new_repo {
 
     echo "\nCreating repo $repo on Github\n"
 
-    # TO ADD: "description": "This is your repository description",
+    # TODO: add "description": "This is your repository description that I got from git",
     new_repo_data='{"name":"'"$repo"'"}'
 
     # curl at github api
-    ( curl --user $github_user:$github_password -X POST --data "$new_repo_data" https://api.github.com/orgs/$cohort/repos > /dev/null ) && ( echo "\nSuccessfully created repo $repo" )
+    # TODO: how try/catch?
+    ( curl --user $github_user:$github_password -X POST --data "$new_repo_data" https://api.github.com/orgs/$cohort/repos > /dev/null ) && ( echo "\nCreated repo $repo" ) 
 }
 
 
@@ -100,7 +102,8 @@ function protect_master {
     # Parse it into json
     permissions=$(jq <<< $permission_settings)
 
-    ( curl --user $github_user:$github_password -X PUT --data "$permissions" https://api.github.com/repos/$cohort/$repo/branches/master/protection > /dev/null ) && ( echo "\nSuccessfully updated master permissions on $repo\n" )
+    # TODO: how try/catch?
+    ( curl --user $github_user:$github_password -X PUT --data "$permissions" https://api.github.com/repos/$cohort/$repo/branches/master/protection > /dev/null ) && ( echo "\nUpdated master permissions on $repo\n" )
 }
 
 clone_repos
